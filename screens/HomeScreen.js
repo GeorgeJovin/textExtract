@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -20,7 +21,7 @@ import * as FileSystem from "expo-file-system";
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
 import { BackHandler } from "react-native";
-import { Audio } from 'expo-av';
+import AudioPlayer from "./AudoPlayer";
 
 const auth = getAuth( app );
 
@@ -32,7 +33,8 @@ export default function HomeScreen() {
   const [lang, setLang] = useState( "eng" );
   const [ocrResult, setOcrResult] = useState( "" );
   const [isLoading, setIsLoading] = useState( false );
-  const [sound, setSound] = useState();
+
+
 
   useEffect( () => {
     const backAction = () => {
@@ -131,18 +133,7 @@ export default function HomeScreen() {
       setCapturedImage( result.assets[0].uri );
     }
   };
-  const playAudio = async () => {
-    if ( speechAudioUrl ) {
-      const soundObject = new Audio.Sound();
-      try {
-        await soundObject.loadAsync( { uri: speechAudioUrl } );
-        await soundObject.playAsync();
-        setSound( soundObject );
-      } catch ( error ) {
-        console.log( 'Error playing sound: ', error );
-      }
-    }
-  };
+
 
   const Digitalize = async () => {
     if ( !lang ) {
@@ -167,7 +158,7 @@ export default function HomeScreen() {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            key: "zz-E94BWsGV4F2PAVMGrCyMDdpheYu-Y75W-5AROj4iEnl8i4-7ISkLoCBMVA9LWVNA",
+            key: "nzdTtMRhu_JUryAw9U1jfSvLbfXGdwZkEowttQYewQjUfjG7FL9muvmtIMACzIEVWMA",
           },
           body: JSON.stringify( {
             base64: base64Data,
@@ -206,7 +197,7 @@ export default function HomeScreen() {
         </html>
       `;
 
-      const file = await printToFileAsync( { html: htmlContent, base64: false } );
+      const file = await printToFileAsync( { html: htmlContent, base64: false, name: 'PDF' } );
       await shareAsync( file.uri );
     } catch ( error ) {
       console.error( "Error generating or sharing the PDF:", error );
@@ -275,16 +266,16 @@ export default function HomeScreen() {
                 onPress={ openCamera }
                 className="px-8 py-2 bg-blue-500 rounded-xl "
               >
-                <Text className="text-xl font-bold text-center text--700">
-                  Camera <Entypo name="camera" size={ 24 } color="black" />
+                <Text className="text-x font-bold text-center text--700">
+                  Open Camera <Entypo name="camera" size={ 14 } color="black" />
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={ openGallery }
                 className="px-7 py-2 bg-blue-500 rounded-xl "
               >
-                <Text className="text-xl font-bold text-center text--700">
-                  Gallery <Entypo name="image" size={ 24 } color="black" />
+                <Text className="text-x font-bold text-center text--700">
+                  Open Gallery <Entypo name="image" size={ 14 } color="black" />
                 </Text>
               </TouchableOpacity>
             </View>
@@ -309,9 +300,9 @@ export default function HomeScreen() {
                 onPress={ Digitalize }
                 className="bg-blue-500 py-2 rounded-xl mt-5"
               >
-                <Text className="text-xl font-bold text-center text--700">
-                  Digitalize{ " " }
-                  <FontAwesome5 name="digital-ocean" size={ 24 } color="black" />
+                <Text className="text-x font-bold text-center text--700">
+                  To Digitalize{ " " }
+                  <FontAwesome5 name="digital-ocean" size={ 14 } color="black" />
                 </Text>
               </TouchableOpacity>
               { isLoading && (
@@ -335,33 +326,36 @@ export default function HomeScreen() {
                       { ocrResult }
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={ handleDownloadPdf }
-                    className="bg-blue-500 py-2 rounded-xl mt-2"
-                  >
-                    <Text className="text-xl font-bold text-center text--700">
-                      Download PDF{ " " }
-                      <FontAwesome5 name="file-pdf" size={ 24 } color="black" />
-                    </Text>
-                  </TouchableOpacity>
-                  <View>
+
+                  <View className="flex-row items-center justify-between mt-5">
                     <TouchableOpacity
-                      onPress={ convertToSpeech }
-                      className="bg-blue-500 py-2 rounded-xl mt-2"
+                      onPress={ handleDownloadPdf }
+                      className="px-8 py-2 bg-blue-500 rounded-xl "
                     >
-                      <Text className="text-xl font-bold text-center text--700">
-                        Convert to Speech
+                      <Text className="text-x font-bold text-center text--700">
+                        Download PDF{ ' ' }
+                        <FontAwesome5 name="file-pdf" size={ 14 } color="black" />
                       </Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={ convertToSpeech }
+                      className="px-7 py-2 bg-blue-500 rounded-xl "
+                    >
+                      <Text className="text-x font-bold text-center text--700">
+                        To Speech { " " }
+                        <FontAwesome5 name="volume-up" size={ 14 } color="black" />
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+
 
                     { speechAudioUrl && (
                       <View style={ { marginTop: 20 } }>
-                        <Text style={ { fontSize: 18, fontWeight: "bold", marginBottom: 10 } }>
-                          Speech Audio:
-                        </Text>
-                        <TouchableOpacity onPress={ playAudio }>
-                          <Text>Play Audio</Text>
-                        </TouchableOpacity>
+
+                        <AudioPlayer audioUrl={ speechAudioUrl } />
+
+
                       </View>
                     ) }
                   </View>

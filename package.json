@@ -12,12 +12,14 @@
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^19.0.0",
     "@react-native-async-storage/async-storage": "^1.19.3",
+    "@react-native-community/slider": "^4.5.0",
     "@react-native-picker/picker": "^2.5.1",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "depcheck": "^1.4.7",
     "expo": "^49.0.0",
+    "expo-av": "~13.4.1",
     "expo-camera": "~13.4.4",
     "expo-file-system": "^15.6.0",
     "expo-image-loader": "^4.4.0",
@@ -39,8 +41,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-star-rating": "^1.1.0",
     "react-native-svg": "13.9.0",
-    "react-native-web": "~0.19.6",
-    "expo-av": "~13.4.1"
+    "react-native-web": "~0.19.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
