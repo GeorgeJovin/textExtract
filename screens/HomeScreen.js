@@ -34,7 +34,11 @@ export default function HomeScreen() {
   const [ocrResult, setOcrResult] = useState( "" );
   const [isLoading, setIsLoading] = useState( false );
 
-
+  const voiceCodeMap = {
+    eng: 'en-US-1',
+    tam: 'ta-IN-1',
+    tel: 'te-IN-1',
+  };
 
   useEffect( () => {
     const backAction = () => {
@@ -76,7 +80,7 @@ export default function HomeScreen() {
         'X-RapidAPI-Host': 'cloudlabs-text-to-speech.p.rapidapi.com'
       },
       body: new URLSearchParams( {
-        voice_code: 'en-US-1',
+        voice_code: voiceCodeMap[lang],
         text: ocrResult,
         speed: '1.00',
         pitch: '1.00',

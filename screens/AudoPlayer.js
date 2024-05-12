@@ -22,6 +22,19 @@ export default function AudioPlayer({ audioUrl }) {
     };
   }, [audioUrl]);
 
+  useEffect(() => {
+    const updatePosition = async () => {
+      if (sound && isPlaying) {
+        const { positionMillis } = await sound.getStatusAsync();
+        setPosition(positionMillis);
+      }
+    };
+
+    const interval = setInterval(updatePosition, 100); // Update every 100 milliseconds
+
+    return () => clearInterval(interval);
+  }, [sound, isPlaying]);
+
   const loadSound = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync(
@@ -47,9 +60,10 @@ export default function AudioPlayer({ audioUrl }) {
     }
   };
 
-  const onSliderValueChange = (value) => {
+  const onSliderValueChange = async (value) => {
     if (sound) {
-      sound.setPositionAsync(value);
+      await sound.setPositionAsync(value);
+      setPosition(value); // Update position immediately when user changes it
     }
   };
 
@@ -77,9 +91,8 @@ export default function AudioPlayer({ audioUrl }) {
           onValueChange={onSliderValueChange}
           disabled={!sound}
         />
-        <Text>{formatTime(position)}</Text>
+        <Text>{formatTime(duration)}</Text>
       </View>
-      <Text>{formatTime(duration)}</Text>
     </View>
   );
 }
